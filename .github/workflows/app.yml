@@ -1,0 +1,51 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:  # Allows you to manually trigger the workflow
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'  # Specify the .NET version you are using
+
+      - name: Build solution
+        run: dotnet build --configuration Release -o build_output
+
+      - name: Set version environment variable
+        run: echo "APP_VERSION=v${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Archive build artifacts
+        run: |
+          mkdir -p output
+          cd build_output
+          zip -r ../output/Shadr_v${{ github.run_number }}.zip ./*
+        shell: bash
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Shadr_v${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: output/Shadr_v${{ github.run_number }}.zip
+          asset_name: Shadr_v${{ github.run_number }}.zip
+          asset_content_type: application/zip
