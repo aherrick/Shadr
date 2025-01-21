@@ -20,7 +20,7 @@ public partial class App : System.Windows.Application
         {
             Icon = new Icon("icon.ico"),
             Visible = true,
-            Text = "Shadr",
+            Text = $"Shadr - v{version}",
             ContextMenuStrip = CreateContextMenu()
         };
 
