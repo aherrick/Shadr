@@ -20,7 +20,7 @@ jobs:
           dotnet-version: '9.0.x'  # Specify the .NET version you are using
 
       - name: Build solution
-        run: dotnet build --configuration Release --output ./build_output ./Shadr.csproj
+        run: dotnet build --self-contained true -r win-x64 --configuration Release --output ./build_output ./Shadr.csproj
 
       - name: Archive build artifacts
         run: |
