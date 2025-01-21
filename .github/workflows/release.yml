@@ -1,4 +1,4 @@
-name: Build and Release
+name: release
 
 on:
   workflow_dispatch:  # Allows you to manually trigger the workflow
@@ -17,16 +17,15 @@ jobs:
           dotnet-version: '9.0.x'  # Specify the .NET version you are using
 
       - name: Build solution
-        run: dotnet build --configuration Release -o build_output
+        run: dotnet build --configuration Release
 
       - name: Set version environment variable
-        run: echo "APP_VERSION=v${{ github.run_number }}" >> $GITHUB_ENV
+        run: echo "APP_VERSION=v1.${{ github.run_number }}" >> $GITHUB_ENV
 
-      - name: Archive build artifacts
+      - name: Copy build artifacts
         run: |
-          mkdir -p output
-          cd build_output
-          zip -r ../output/Shadr_v${{ github.run_number }}.zip ./*
+          mkdir -p build_output
+          cp -r **/bin/Release/* build_output
         shell: bash
 
       - name: Create Release
