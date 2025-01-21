@@ -4,7 +4,7 @@ on:
   workflow_dispatch:  # Allows you to manually trigger the workflow
 
 env:
-  APP_NAME_VERSION: Shadr v1.${{ github.run_number }}
+  APP_NAME_VERSION: Shadr_v1.${{ github.run_number }}
 
 jobs:
   build:
