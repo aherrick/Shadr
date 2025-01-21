@@ -16,9 +16,6 @@ jobs:
         with:
           dotnet-version: '9.0.x'  # Specify the .NET version you are using
 
-      - name: Restore NuGet packages
-        run: dotnet restore
-
       - name: Build solution
         run: dotnet build --configuration Release
 
@@ -28,15 +25,14 @@ jobs:
       - name: Copy build artifacts
         run: |
           mkdir -p build_output
-          find . -type d -name Release | while read dir; do cp -r "$dir"/* build_output/; done
-        shell: bash
+          Get-ChildItem -Recurse -Filter Release | ForEach-Object { Copy-Item -Path $_.FullName -Destination build_output -Recurse }
+        shell: pwsh
 
       - name: Archive build artifacts
         run: |
           mkdir -p output
-          cd build_output
-          zip -r ../output/Shadr_v1.${{ github.run_number }}.zip ./*
-        shell: bash
+          Compress-Archive -Path build_output/* -DestinationPath output/Shadr_v1.${{ github.run_number }}.zip
+        shell: pwsh
 
       - name: Create Release
         id: create_release
