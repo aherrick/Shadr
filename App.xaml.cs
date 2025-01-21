@@ -13,15 +13,12 @@ public partial class App : System.Windows.Application
     {
         base.OnStartup(e);
 
-        var appNameVersion =
-            Environment.GetEnvironmentVariable("APP_NAME_VERSION") ?? "Unknown version";
-
         // Create the tray icon
         _trayIcon = new NotifyIcon
         {
             Icon = new Icon("icon.ico"),
             Visible = true,
-            Text = appNameVersion,
+            Text = "[[app-name-version]]",
             ContextMenuStrip = CreateContextMenu()
         };
 
@@ -38,6 +35,10 @@ public partial class App : System.Windows.Application
         menu.Items.Add("50%", null, (s, e) => SetBrightness(50));
         menu.Items.Add("75%", null, (s, e) => SetBrightness(75));
         menu.Items.Add("100%", null, (s, e) => SetBrightness(100));
+
+        // Add a separator
+        menu.Items.Add(new ToolStripSeparator());
+
         menu.Items.Add("Exit", null, (s, e) => Shutdown());
 
         return menu;

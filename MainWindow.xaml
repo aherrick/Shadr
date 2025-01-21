@@ -5,7 +5,7 @@
     xmlns:local="clr-namespace:Shadr"
     AllowsTransparency="True"
     Background="Black"
-    Loaded="Window_Loaded"
+    Loaded="MainWindow_Loaded"
     Opacity="0"
     ShowInTaskbar="False"
     Topmost="True"
