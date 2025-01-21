@@ -13,14 +13,15 @@ public partial class App : System.Windows.Application
     {
         base.OnStartup(e);
 
-        var version = Environment.GetEnvironmentVariable("APP_VERSION") ?? "Unknown version";
+        var appNameVersion =
+            Environment.GetEnvironmentVariable("APP_NAME_VERSION") ?? "Unknown version";
 
         // Create the tray icon
         _trayIcon = new NotifyIcon
         {
             Icon = new Icon("icon.ico"),
             Visible = true,
-            Text = $"Shadr - {version}",
+            Text = appNameVersion,
             ContextMenuStrip = CreateContextMenu()
         };
 
