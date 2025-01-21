@@ -13,7 +13,7 @@ public partial class App : System.Windows.Application
     {
         base.OnStartup(e);
 
-        string version = Environment.GetEnvironmentVariable("APP_VERSION") ?? "Unknown version";
+        var version = Environment.GetEnvironmentVariable("APP_VERSION") ?? "Unknown version";
 
         // Create the tray icon
         _trayIcon = new NotifyIcon
