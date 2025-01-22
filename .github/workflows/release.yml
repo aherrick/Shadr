@@ -21,7 +21,7 @@ jobs:
 
       - name: set app name version
         run: |
-          $filePath = './app.xaml.cs'
+          $filePath = './Form1.cs'
           $token = '[[app-name-version]]'
           $replacementValue = '${{ env.APP_NAME_VERSION }}'
           (Get-Content -Path $filePath) -replace [regex]::Escape($token), $replacementValue | Set-Content -Path $filePath
