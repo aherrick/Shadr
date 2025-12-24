@@ -45,7 +45,9 @@ public partial class Form1 : Form
                 Items =
                 {
                     new ToolStripMenuItem("0%", null, (s, e) => _brightnessHelper.SetBrightness(0)),
+                    new ToolStripMenuItem("0% (Gamma)", null, (s, e) => _brightnessHelper.SetBrightness(0, forceGamma: true)),
                     new ToolStripMenuItem("25%", null, (s, e) => _brightnessHelper.SetBrightness(25)),
+                    new ToolStripMenuItem("25% (Gamma)", null, (s, e) => _brightnessHelper.SetBrightness(25, forceGamma: true)),
                     new ToolStripMenuItem("50%", null, (s, e) => _brightnessHelper.SetBrightness(50)),
                     new ToolStripMenuItem("75%", null, (s, e) => _brightnessHelper.SetBrightness(75)),
                     new ToolStripMenuItem("100%", null, (s, e) => _brightnessHelper.SetBrightness(100)),

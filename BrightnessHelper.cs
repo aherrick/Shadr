@@ -68,13 +68,14 @@ public class BrightnessHelper : IDisposable
     /// Sets the screen brightness to the specified percentage.
     /// </summary>
     /// <param name="percentage">Brightness percentage (0-150). 100 = normal, 0 = black.</param>
-    public void SetBrightness(int percentage)
+    /// <param name="forceGamma">Force gamma ramp usage even for low values (for testing).</param>
+    public void SetBrightness(int percentage, bool forceGamma = false)
     {
         // Clamp to valid range
         percentage = Math.Clamp(percentage, 0, 150);
         _currentBrightness = percentage;
 
-        if (percentage < OverlayThreshold)
+        if (!forceGamma && percentage < OverlayThreshold)
         {
             // Use overlay for extreme dimming (better black levels)
             ResetGamma();
