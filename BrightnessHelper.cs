@@ -42,6 +42,7 @@ public class BrightnessHelper : IDisposable
     private readonly Form _overlayForm;
     private bool _disposed;
     private int _currentBrightness = 100;
+    private IntPtr _windowHandle;
 
     /// <summary>
     /// Brightness levels available in the application.
@@ -61,7 +62,9 @@ public class BrightnessHelper : IDisposable
     public BrightnessHelper(Form overlayForm)
     {
         _overlayForm = overlayForm;
+        _windowHandle = overlayForm.Handle;
         SaveOriginalGamma();
+        ClickThroughHelper.EnableClickThrough(_windowHandle);
     }
 
     /// <summary>
@@ -92,6 +95,16 @@ public class BrightnessHelper : IDisposable
             // Use gamma ramp for moderate adjustments
             HideOverlay();
             ApplyGamma(percentage);
+        }
+        
+        // Manage click-through based on brightness level
+        if (percentage == 0)
+        {
+            ClickThroughHelper.DisableClickThrough(_windowHandle);
+        }
+        else
+        {
+            ClickThroughHelper.EnableClickThrough(_windowHandle);
         }
     }
 

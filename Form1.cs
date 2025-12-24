@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Runtime.InteropServices;
 using Updatum;
 
 namespace Shadr;
@@ -16,19 +15,6 @@ public partial class Form1 : Form
     };
     
     private static string AppVersion => Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
-
-    // P/Invoke for enabling click-through
-    private const int GWL_EXSTYLE = -20;
-    private const int WS_EX_LAYERED = 0x80000;
-    private const int WS_EX_TRANSPARENT = 0x20;
-
-#pragma warning disable SYSLIB1054 // Use LibraryImport - not needed for simple app
-    [DllImport("user32.dll")]
-    private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
-    [DllImport("user32.dll")]
-    private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-#pragma warning restore SYSLIB1054
 
     public Form1()
     {
@@ -85,10 +71,9 @@ public partial class Form1 : Form
             }
         };
 
-        // Enable click-through and check for updates on startup
+        // Check for updates on startup
         Load += async (s, e) =>
         {
-            EnableClickThrough();
             await CheckForUpdatesAsync(silent: true);
         };
     }
@@ -134,12 +119,6 @@ public partial class Form1 : Form
         {
             // Silently fail - updates are not critical
         }
-    }
-
-    private void EnableClickThrough()
-    {
-        int exStyle = GetWindowLong(this.Handle, GWL_EXSTYLE);
-        _ = SetWindowLong(this.Handle, GWL_EXSTYLE, exStyle | WS_EX_TRANSPARENT | WS_EX_LAYERED);
     }
 
     protected override void OnFormClosing(FormClosingEventArgs e)
