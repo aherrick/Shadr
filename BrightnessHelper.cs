@@ -62,7 +62,6 @@ public class BrightnessHelper : IDisposable
     {
         _overlayForm = overlayForm;
         SaveOriginalGamma();
-        ClickThroughHelper.EnableClickThrough(overlayForm.Handle);
     }
 
     /// <summary>

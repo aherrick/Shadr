@@ -59,9 +59,10 @@ public partial class Form1 : Form
         StartPosition = FormStartPosition.Manual;
         WindowState = FormWindowState.Maximized;
 
-        // Check for updates on startup
+        // Check for updates on startup and enable click-through
         Load += async (s, e) =>
         {
+            ClickThroughHelper.EnableClickThrough(this.Handle);
             await CheckForUpdatesAsync(silent: true);
         };
     }
