@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Updatum;
 
@@ -7,6 +8,7 @@ public partial class Form1 : Form
 {
     private readonly NotifyIcon trayIcon;
     private static readonly UpdatumManager AppUpdater = new("aherrick", "Shadr");
+    private static string AppVersion => Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
 
     // P/Invoke for enabling click-through
     private const int GWL_EXSTYLE = -20;
@@ -45,8 +47,8 @@ public partial class Form1 : Form
                     ),
                     new ToolStripMenuItem("Exit", null, (s, e) => Application.Exit()),
                 },
-                Text = "[[app-name-version]]",
             },
+            Text = $"Shadr v{AppVersion}",
             Visible = true,
         };
 
