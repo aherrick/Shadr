@@ -10,6 +10,7 @@ public partial class Form1 : Form
 
     // P/Invoke for enabling click-through
     private const int GWL_EXSTYLE = -20;
+
     private const int WS_EX_LAYERED = 0x80000;
     private const int WS_EX_TRANSPARENT = 0x20;
 
@@ -36,12 +37,16 @@ public partial class Form1 : Form
                     new ToolStripMenuItem("100%", null, (s, e) => SetBrightness(0.0)),
                     new ToolStripMenuItem("125%", null, (s, e) => SetBrightness(-0.25)),
                     new ToolStripSeparator(),
-                    new ToolStripMenuItem("Check for Updates", null, async (s, e) => await CheckForUpdatesAsync()),
-                    new ToolStripMenuItem("Exit", null, (s, e) => Application.Exit())
+                    new ToolStripMenuItem(
+                        "Check for Updates",
+                        null,
+                        async (s, e) => await CheckForUpdatesAsync()
+                    ),
+                    new ToolStripMenuItem("Exit", null, (s, e) => Application.Exit()),
                 },
                 Text = "[[app-name-version]]",
             },
-            Visible = true
+            Visible = true,
         };
 
         // Configure the form to act as an overlay
@@ -77,7 +82,7 @@ public partial class Form1 : Form
         }
     }
 
-    private async Task CheckForUpdatesAsync(bool silent = false)
+    private static async Task CheckForUpdatesAsync(bool silent = false)
     {
         var updateFound = await AppUpdater.CheckForUpdatesAsync();
 
@@ -85,7 +90,12 @@ public partial class Form1 : Form
         {
             if (!silent)
             {
-                MessageBox.Show("You are running the latest version!", "No Updates", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    "You are running the latest version!",
+                    "No Updates",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
             }
             return;
         }
@@ -94,12 +104,16 @@ public partial class Form1 : Form
             $"A new version is available: {AppUpdater.LatestRelease?.Name}\n\nWould you like to download and install it now?",
             "Update Available",
             MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question);
+            MessageBoxIcon.Question
+        );
 
         if (result == DialogResult.Yes)
         {
             var downloadedAsset = await AppUpdater.DownloadUpdateAsync();
-            await AppUpdater.InstallUpdateAsync(downloadedAsset);
+            if (downloadedAsset is not null)
+            {
+                await AppUpdater.InstallUpdateAsync(downloadedAsset);
+            }
         }
     }
 
