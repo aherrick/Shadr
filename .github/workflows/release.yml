@@ -3,6 +3,10 @@ name: release
 on:
   workflow_dispatch:  # Allows you to manually trigger the workflow
 
+env:
+  VERSION: 1.0.${{ github.run_number }}
+  ASSET_NAME: Shadr_win-x64.exe
+
 jobs:
   build:
     runs-on: windows-latest
@@ -17,12 +21,12 @@ jobs:
             dotnet-version: '10.0.x'
 
       - name: Publish Single File
-        run: dotnet publish ./Shadr.csproj -c Release --output ./build_output -p:Version=1.0.${{ github.run_number }}
+        run: dotnet publish ./Shadr.csproj -c Release --output ./build_output -p:Version=${{ env.VERSION }}
 
       - name: Prepare Release Assets
         run: |
           mkdir -p output
-          Copy-Item -Path "build_output/Shadr.exe" -Destination "output/Shadr_win-x64.exe"
+          Copy-Item -Path "build_output/Shadr.exe" -Destination "output/${{ env.ASSET_NAME }}"
         shell: pwsh
 
       - name: Create Release
@@ -31,8 +35,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          release_name: v1.0.${{ github.run_number }}
+          tag_name: v${{ env.VERSION }}
+          release_name: v${{ env.VERSION }}
           draft: false
           prerelease: false
 
@@ -42,6 +46,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: output/Shadr_win-x64.exe
-          asset_name: Shadr_win-x64.exe
+          asset_path: output/${{ env.ASSET_NAME }}
+          asset_name: ${{ env.ASSET_NAME }}
           asset_content_type: application/octet-stream
