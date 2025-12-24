@@ -1,10 +1,12 @@
 using System.Runtime.InteropServices;
+using Updatum;
 
 namespace Shadr;
 
 public partial class Form1 : Form
 {
     private readonly NotifyIcon trayIcon;
+    private static readonly UpdatumManager AppUpdater = new("aherrick", "Shadr");
 
     public Form1()
     {
@@ -22,6 +24,7 @@ public partial class Form1 : Form
                     new ToolStripMenuItem("75%", null, (s, e) => SetBrightness(0.25)),
                     new ToolStripMenuItem("100%", null, (s, e) => SetBrightness(0.0)),
                     new ToolStripSeparator(),
+                    new ToolStripMenuItem("Check for Updates", null, async (s, e) => await CheckForUpdatesAsync()),
                     new ToolStripMenuItem("Exit", null, (s, e) => Application.Exit())
                 },
                 Text = "[[app-name-version]]",
@@ -40,11 +43,42 @@ public partial class Form1 : Form
 
         // Enable click-through
         Load += (s, e) => EnableClickThrough();
+        
+        // Check for updates on startup (async, non-blocking)
+        Load += async (s, e) => await CheckForUpdatesOnStartupAsync();
     }
 
     private void SetBrightness(double opacity)
     {
         Opacity = opacity; // Adjust overlay brightness
+    }
+
+    private async Task CheckForUpdatesOnStartupAsync() => await CheckForUpdatesAsync(silent: true);
+
+    private async Task CheckForUpdatesAsync(bool silent = false)
+    {
+        var updateFound = await AppUpdater.CheckForUpdatesAsync();
+
+        if (!updateFound)
+        {
+            if (!silent)
+            {
+                MessageBox.Show("You are running the latest version!", "No Updates", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            return;
+        }
+
+        var result = MessageBox.Show(
+            $"A new version is available: {AppUpdater.LatestRelease?.Name}\n\nWould you like to download and install it now?",
+            "Update Available",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (result == DialogResult.Yes)
+        {
+            var downloadedAsset = await AppUpdater.DownloadUpdateAsync();
+            await AppUpdater.InstallUpdateAsync(downloadedAsset);
+        }
     }
 
     private void EnableClickThrough()
