@@ -99,7 +99,7 @@ public partial class Form1 : Form
         }
     }
 
-    private static async Task CheckForUpdatesAsync(bool silent = false)
+    private async Task CheckForUpdatesAsync(bool silent = false)
     {
         try
         {
@@ -132,6 +132,8 @@ public partial class Form1 : Form
                 var downloadedAsset = await AppUpdater.DownloadUpdateAsync();
                 if (downloadedAsset != null)
                 {
+                    // Reset brightness before update kills the process
+                    _brightnessHelper.Dispose();
                     await AppUpdater.InstallUpdateAsync(downloadedAsset);
                 }
             }
