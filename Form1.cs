@@ -45,6 +45,7 @@ public partial class Form1 : Form
                         null,
                         async (s, e) => await CheckForUpdatesAsync()
                     ),
+                    new ToolStripMenuItem("About", null, (s, e) => OpenAbout()),
                     new ToolStripMenuItem("Exit", null, (s, e) => Application.Exit()),
                 },
             },
@@ -94,8 +95,8 @@ public partial class Form1 : Form
             if (!silent)
             {
                 MessageBox.Show(
-                    "You are running the latest version!",
-                    "No Updates",
+                    "Shadr is up to date!\n\nYou are running the latest version.",
+                    "Shadr - No Updates",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
                 );
@@ -104,8 +105,8 @@ public partial class Form1 : Form
         }
 
         var result = MessageBox.Show(
-            $"A new version is available: {AppUpdater.LatestRelease?.Name}\n\nWould you like to download and install it now?",
-            "Update Available",
+            $"A new version of Shadr is available!\n\nCurrent version: v{AppVersion}\nNew version: {AppUpdater.LatestRelease?.Name}\n\nWould you like to download and install the update now?",
+            "Shadr - Update Available",
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Question
         );
@@ -130,5 +131,21 @@ public partial class Form1 : Form
     {
         trayIcon.Dispose(); // Clean up tray icon
         base.OnFormClosing(e);
+    }
+
+    private static void OpenAbout()
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "https://github.com/aherrick/Shadr",
+                UseShellExecute = true
+            });
+        }
+        catch
+        {
+            // Silently fail if browser can't open
+        }
     }
 }
