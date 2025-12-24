@@ -113,11 +113,8 @@ public partial class Form1 : Form
 
         if (result == DialogResult.Yes)
         {
-            var downloadedAsset = await AppUpdater.DownloadUpdateAsync();
-            if (downloadedAsset is not null)
-            {
-                await AppUpdater.InstallUpdateAsync(downloadedAsset);
-            }
+            // This will download, install, and restart the app automatically
+            await AppUpdater.DownloadAndInstallUpdateAsync();
         }
     }
 
