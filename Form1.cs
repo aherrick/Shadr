@@ -30,10 +30,7 @@ public partial class Form1 : Form
             {
                 Items =
                 {
-                    new ToolStripMenuItem("0%", null, (s, e) => _brightnessHelper.SetBrightness(0)),
-                    new ToolStripMenuItem("0% (Gamma)", null, (s, e) => _brightnessHelper.SetBrightness(0, forceGamma: true)),
                     new ToolStripMenuItem("25%", null, (s, e) => _brightnessHelper.SetBrightness(25)),
-                    new ToolStripMenuItem("25% (Gamma)", null, (s, e) => _brightnessHelper.SetBrightness(25, forceGamma: true)),
                     new ToolStripMenuItem("50%", null, (s, e) => _brightnessHelper.SetBrightness(50)),
                     new ToolStripMenuItem("75%", null, (s, e) => _brightnessHelper.SetBrightness(75)),
                     new ToolStripMenuItem("100%", null, (s, e) => _brightnessHelper.SetBrightness(100)),
@@ -61,15 +58,6 @@ public partial class Form1 : Form
         ShowInTaskbar = false;
         StartPosition = FormStartPosition.Manual;
         WindowState = FormWindowState.Maximized;
-
-        // Click anywhere on the overlay to reset to 50% (escape from 0% darkness)
-        MouseDown += (s, e) =>
-        {
-            if (_brightnessHelper.GetCurrentBrightness() == 0)
-            {
-                _brightnessHelper.SetBrightness(50);
-            }
-        };
 
         // Check for updates on startup
         Load += async (s, e) =>

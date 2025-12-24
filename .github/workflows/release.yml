@@ -31,7 +31,6 @@ jobs:
           New-Item -ItemType Directory -Path "release" -Force
           New-Item -ItemType Directory -Path "temp" -Force
           Copy-Item "publish/Shadr.exe" -Destination "temp/"
-          Copy-Item "README.md" -Destination "temp/"
           Compress-Archive -Path "temp/*" -DestinationPath "release/Shadr-v${{ env.VERSION }}-win-x64.zip"
           Remove-Item "temp" -Recurse -Force
 

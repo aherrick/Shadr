@@ -42,7 +42,6 @@ public class BrightnessHelper : IDisposable
     private readonly Form _overlayForm;
     private bool _disposed;
     private int _currentBrightness = 100;
-    private IntPtr _windowHandle;
 
     /// <summary>
     /// Brightness levels available in the application.
@@ -62,23 +61,21 @@ public class BrightnessHelper : IDisposable
     public BrightnessHelper(Form overlayForm)
     {
         _overlayForm = overlayForm;
-        _windowHandle = overlayForm.Handle;
         SaveOriginalGamma();
-        ClickThroughHelper.EnableClickThrough(_windowHandle);
+        ClickThroughHelper.EnableClickThrough(overlayForm.Handle);
     }
 
     /// <summary>
     /// Sets the screen brightness to the specified percentage.
     /// </summary>
-    /// <param name="percentage">Brightness percentage (0-150). 100 = normal, 0 = black.</param>
-    /// <param name="forceGamma">Force gamma ramp usage even for low values (for testing).</param>
-    public void SetBrightness(int percentage, bool forceGamma = false)
+    /// <param name="percentage">Brightness percentage (25-150). 100 = normal.</param>
+    public void SetBrightness(int percentage)
     {
         // Clamp to valid range
-        percentage = Math.Clamp(percentage, 0, 150);
+        percentage = Math.Clamp(percentage, 25, 150);
         _currentBrightness = percentage;
 
-        if (!forceGamma && percentage < OverlayThreshold)
+        if (percentage < OverlayThreshold)
         {
             // Use overlay for extreme dimming (better black levels)
             ResetGamma();
@@ -96,16 +93,6 @@ public class BrightnessHelper : IDisposable
             HideOverlay();
             ApplyGamma(percentage);
         }
-        
-        // Manage click-through based on brightness level
-        if (percentage == 0)
-        {
-            ClickThroughHelper.DisableClickThrough(_windowHandle);
-        }
-        else
-        {
-            ClickThroughHelper.EnableClickThrough(_windowHandle);
-        }
     }
 
     /// <summary>
@@ -117,10 +104,7 @@ public class BrightnessHelper : IDisposable
         HideOverlay();
     }
 
-    /// <summary>
-    /// Gets the current brightness percentage.
-    /// </summary>
-    public int GetCurrentBrightness() => _currentBrightness;
+
 
     #region Gamma Ramp Methods
 
