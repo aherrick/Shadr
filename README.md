@@ -21,10 +21,10 @@ A lightweight Windows application that adds a customizable overlay to control yo
 
 ## Installation
 
-1. Download `Shadr_win-x64.exe` from the [latest release](https://github.com/aherrick/Shadr/releases/latest)
-2. Rename it to `Shadr.exe` and place it anywhere you like
+1. Download `Shadr-vX.X.X-win-x64.zip` from the [latest release](https://github.com/aherrick/Shadr/releases/latest)
+2. Extract to any folder
 3. Run `Shadr.exe`
-4. (Optional) Drag to your Startup folder for auto-start with Windows
+4. Shadr will auto-update when new versions are available
 
 ## Usage
 
@@ -70,7 +70,6 @@ dotnet publish -c Release
 ## Technical Details
 
 - Built with .NET 10 and Windows Forms
-- Single-file deployment with native libraries embedded
 - Auto-updates powered by [Updatum](https://github.com/sn4k3/Updatum)
 - GitHub Actions CI/CD for automated releases
 

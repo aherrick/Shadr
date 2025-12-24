@@ -7,7 +7,13 @@ namespace Shadr;
 public partial class Form1 : Form
 {
     private readonly NotifyIcon trayIcon;
-    private static readonly UpdatumManager AppUpdater = new("aherrick", "Shadr");
+    
+    private static readonly UpdatumManager AppUpdater = new("aherrick", "Shadr")
+    {
+        FetchOnlyLatestRelease = true,
+        InstallUpdateSingleFileExecutableName = "Shadr",
+    };
+    
     private static string AppVersion => Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
 
     // P/Invoke for enabling click-through
@@ -88,33 +94,44 @@ public partial class Form1 : Form
 
     private static async Task CheckForUpdatesAsync(bool silent = false)
     {
-        var updateFound = await AppUpdater.CheckForUpdatesAsync();
-
-        if (!updateFound)
+        try
         {
-            if (!silent)
+            var updateFound = await AppUpdater.CheckForUpdatesAsync();
+
+            if (!updateFound)
             {
-                MessageBox.Show(
-                    "Shadr is up to date!\n\nYou are running the latest version.",
-                    "Shadr - No Updates",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
+                if (!silent)
+                {
+                    MessageBox.Show(
+                        "Shadr is up to date!\n\nYou are running the latest version.",
+                        "Shadr - No Updates",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                return;
             }
-            return;
+
+            var release = AppUpdater.LatestRelease!;
+            var result = MessageBox.Show(
+                $"A new version of Shadr is available!\n\nCurrent version: v{AppVersion}\nNew version: {release.TagName}\n\nWould you like to download and install the update now?",
+                "Shadr - Update Available",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                var downloadedAsset = await AppUpdater.DownloadUpdateAsync();
+                if (downloadedAsset != null)
+                {
+                    await AppUpdater.InstallUpdateAsync(downloadedAsset);
+                }
+            }
         }
-
-        var result = MessageBox.Show(
-            $"A new version of Shadr is available!\n\nCurrent version: v{AppVersion}\nNew version: {AppUpdater.LatestRelease?.Name}\n\nWould you like to download and install the update now?",
-            "Shadr - Update Available",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question
-        );
-
-        if (result == DialogResult.Yes)
+        catch
         {
-            // This will download, install, and restart the app automatically
-            await AppUpdater.DownloadAndInstallUpdateAsync();
+            // Silently fail - updates are not critical
         }
     }
 
