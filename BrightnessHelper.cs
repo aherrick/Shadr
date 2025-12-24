@@ -66,11 +66,11 @@ public class BrightnessHelper : IDisposable
     /// <summary>
     /// Sets the screen brightness to the specified percentage.
     /// </summary>
-    /// <param name="percentage">Brightness percentage (50-150). 100 = normal.</param>
+    /// <param name="percentage">Brightness percentage (0-150). 100 = normal, 0 = black.</param>
     public void SetBrightness(int percentage)
     {
         // Clamp to valid range
-        percentage = Math.Clamp(percentage, 50, 150);
+        percentage = Math.Clamp(percentage, 0, 150);
 
         if (percentage < OverlayThreshold)
         {
