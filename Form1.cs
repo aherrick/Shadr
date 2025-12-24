@@ -29,7 +29,7 @@ public partial class Form1 : Form
 
         trayIcon = new NotifyIcon()
         {
-            Icon = new Icon("icon.ico"),
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath),
             ContextMenuStrip = new ContextMenuStrip
             {
                 Items =
