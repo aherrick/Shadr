@@ -10,15 +10,16 @@ public partial class Form1 : Form
 
     // P/Invoke for enabling click-through
     private const int GWL_EXSTYLE = -20;
-
     private const int WS_EX_LAYERED = 0x80000;
     private const int WS_EX_TRANSPARENT = 0x20;
 
-    [LibraryImport("user32.dll")]
-    private static partial int GetWindowLong(IntPtr hWnd, int nIndex);
+#pragma warning disable SYSLIB1054 // Use LibraryImport - not needed for simple app
+    [DllImport("user32.dll")]
+    private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-    [LibraryImport("user32.dll")]
-    private static partial int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+    [DllImport("user32.dll")]
+    private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+#pragma warning restore SYSLIB1054
 
     public Form1()
     {
