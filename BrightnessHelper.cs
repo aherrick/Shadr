@@ -41,6 +41,7 @@ public class BrightnessHelper : IDisposable
     private bool _originalGammaSaved;
     private readonly Form _overlayForm;
     private bool _disposed;
+    private int _currentBrightness = 100;
 
     /// <summary>
     /// Brightness levels available in the application.
@@ -71,6 +72,7 @@ public class BrightnessHelper : IDisposable
     {
         // Clamp to valid range
         percentage = Math.Clamp(percentage, 0, 150);
+        _currentBrightness = percentage;
 
         if (percentage < OverlayThreshold)
         {
@@ -100,6 +102,11 @@ public class BrightnessHelper : IDisposable
         ResetGamma();
         HideOverlay();
     }
+
+    /// <summary>
+    /// Gets the current brightness percentage.
+    /// </summary>
+    public int GetCurrentBrightness() => _currentBrightness;
 
     #region Gamma Ramp Methods
 

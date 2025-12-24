@@ -74,6 +74,15 @@ public partial class Form1 : Form
         StartPosition = FormStartPosition.Manual;
         WindowState = FormWindowState.Maximized;
 
+        // Click anywhere on the overlay to reset to 50% (escape from 0% darkness)
+        MouseDown += (s, e) =>
+        {
+            if (_brightnessHelper.GetCurrentBrightness() == 0)
+            {
+                _brightnessHelper.SetBrightness(50);
+            }
+        };
+
         // Enable click-through and check for updates on startup
         Load += async (s, e) =>
         {
