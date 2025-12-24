@@ -16,6 +16,7 @@ public partial class Form1 : Form
     private static readonly UpdatumManager AppUpdater = new("aherrick", "Shadr")
     {
         FetchOnlyLatestRelease = true,
+        AssetRegexPattern = $"^Shadr_{EntryApplication.GenericRuntimeIdentifier}_v",
         InstallUpdateSingleFileExecutableName = "Shadr",
     };
 
