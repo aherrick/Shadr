@@ -7,6 +7,7 @@ namespace Shadr;
 public partial class Form1 : Form
 {
     private readonly NotifyIcon trayIcon;
+    private readonly BrightnessHelper _brightnessHelper;
     
     private static readonly UpdatumManager AppUpdater = new("aherrick", "Shadr")
     {
@@ -33,6 +34,9 @@ public partial class Form1 : Form
     {
         InitializeComponent();
 
+        // Initialize brightness helper with this form as the overlay
+        _brightnessHelper = new BrightnessHelper(this);
+
         trayIcon = new NotifyIcon()
         {
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath),
@@ -40,11 +44,11 @@ public partial class Form1 : Form
             {
                 Items =
                 {
-                    new ToolStripMenuItem("25%", null, (s, e) => SetBrightness(0.75)),
-                    new ToolStripMenuItem("50%", null, (s, e) => SetBrightness(0.5)),
-                    new ToolStripMenuItem("75%", null, (s, e) => SetBrightness(0.25)),
-                    new ToolStripMenuItem("100%", null, (s, e) => SetBrightness(0.0)),
-                    new ToolStripMenuItem("125%", null, (s, e) => SetBrightness(-0.25)),
+                    new ToolStripMenuItem("50%", null, (s, e) => _brightnessHelper.SetBrightness(50)),
+                    new ToolStripMenuItem("75%", null, (s, e) => _brightnessHelper.SetBrightness(75)),
+                    new ToolStripMenuItem("100%", null, (s, e) => _brightnessHelper.SetBrightness(100)),
+                    new ToolStripMenuItem("125%", null, (s, e) => _brightnessHelper.SetBrightness(125)),
+                    new ToolStripMenuItem("150%", null, (s, e) => _brightnessHelper.SetBrightness(150)),
                     new ToolStripSeparator(),
                     new ToolStripMenuItem(
                         "Check for Updates",
@@ -59,7 +63,7 @@ public partial class Form1 : Form
             Visible = true,
         };
 
-        // Configure the form to act as an overlay
+        // Configure the form to act as an overlay (used for extreme dimming only)
         FormBorderStyle = FormBorderStyle.None;
         BackColor = Color.Black;
         Opacity = 0.0; // Start with no overlay
@@ -74,22 +78,6 @@ public partial class Form1 : Form
             EnableClickThrough();
             await CheckForUpdatesAsync(silent: true);
         };
-    }
-
-    private void SetBrightness(double opacity)
-    {
-        if (opacity < 0)
-        {
-            // Brightness above 100% - use white overlay
-            BackColor = Color.White;
-            Opacity = Math.Abs(opacity);
-        }
-        else
-        {
-            // Normal dimming - use black overlay
-            BackColor = Color.Black;
-            Opacity = opacity;
-        }
     }
 
     private static async Task CheckForUpdatesAsync(bool silent = false)
@@ -143,6 +131,7 @@ public partial class Form1 : Form
 
     protected override void OnFormClosing(FormClosingEventArgs e)
     {
+        _brightnessHelper.Dispose(); // Reset gamma and clean up
         trayIcon.Dispose(); // Clean up tray icon
         base.OnFormClosing(e);
     }
