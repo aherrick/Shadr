@@ -8,6 +8,17 @@ public partial class Form1 : Form
     private readonly NotifyIcon trayIcon;
     private static readonly UpdatumManager AppUpdater = new("aherrick", "Shadr");
 
+    // P/Invoke for enabling click-through
+    private const int GWL_EXSTYLE = -20;
+    private const int WS_EX_LAYERED = 0x80000;
+    private const int WS_EX_TRANSPARENT = 0x20;
+
+    [LibraryImport("user32.dll")]
+    private static partial int GetWindowLong(IntPtr hWnd, int nIndex);
+
+    [LibraryImport("user32.dll")]
+    private static partial int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
     public Form1()
     {
         InitializeComponent();
@@ -23,6 +34,7 @@ public partial class Form1 : Form
                     new ToolStripMenuItem("50%", null, (s, e) => SetBrightness(0.5)),
                     new ToolStripMenuItem("75%", null, (s, e) => SetBrightness(0.25)),
                     new ToolStripMenuItem("100%", null, (s, e) => SetBrightness(0.0)),
+                    new ToolStripMenuItem("125%", null, (s, e) => SetBrightness(-0.25)),
                     new ToolStripSeparator(),
                     new ToolStripMenuItem("Check for Updates", null, async (s, e) => await CheckForUpdatesAsync()),
                     new ToolStripMenuItem("Exit", null, (s, e) => Application.Exit())
@@ -41,19 +53,29 @@ public partial class Form1 : Form
         StartPosition = FormStartPosition.Manual;
         WindowState = FormWindowState.Maximized;
 
-        // Enable click-through
-        Load += (s, e) => EnableClickThrough();
-        
-        // Check for updates on startup (async, non-blocking)
-        Load += async (s, e) => await CheckForUpdatesOnStartupAsync();
+        // Enable click-through and check for updates on startup
+        Load += async (s, e) =>
+        {
+            EnableClickThrough();
+            await CheckForUpdatesAsync(silent: true);
+        };
     }
 
     private void SetBrightness(double opacity)
     {
-        Opacity = opacity; // Adjust overlay brightness
+        if (opacity < 0)
+        {
+            // Brightness above 100% - use white overlay
+            BackColor = Color.White;
+            Opacity = Math.Abs(opacity);
+        }
+        else
+        {
+            // Normal dimming - use black overlay
+            BackColor = Color.Black;
+            Opacity = opacity;
+        }
     }
-
-    private async Task CheckForUpdatesOnStartupAsync() => await CheckForUpdatesAsync(silent: true);
 
     private async Task CheckForUpdatesAsync(bool silent = false)
     {
@@ -84,7 +106,7 @@ public partial class Form1 : Form
     private void EnableClickThrough()
     {
         int exStyle = GetWindowLong(this.Handle, GWL_EXSTYLE);
-        SetWindowLong(this.Handle, GWL_EXSTYLE, exStyle | WS_EX_TRANSPARENT | WS_EX_LAYERED);
+        _ = SetWindowLong(this.Handle, GWL_EXSTYLE, exStyle | WS_EX_TRANSPARENT | WS_EX_LAYERED);
     }
 
     protected override void OnFormClosing(FormClosingEventArgs e)
@@ -92,16 +114,4 @@ public partial class Form1 : Form
         trayIcon.Dispose(); // Clean up tray icon
         base.OnFormClosing(e);
     }
-
-    // P/Invoke for enabling click-through
-    private const int GWL_EXSTYLE = -20;
-
-    private const int WS_EX_LAYERED = 0x80000;
-    private const int WS_EX_TRANSPARENT = 0x20;
-
-    [DllImport("user32.dll")]
-    private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
-    [DllImport("user32.dll")]
-    private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 }

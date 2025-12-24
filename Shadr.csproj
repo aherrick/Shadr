@@ -6,20 +6,11 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    
-    <!-- AOT and Single File Configuration -->
-    <PublishAot>true</PublishAot>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>full</TrimMode>
-    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <DebuggerSupport>false</DebuggerSupport>
-    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
-    <InvariantGlobalization>false</InvariantGlobalization>
-    <OptimizationPreference>Speed</OptimizationPreference>
   </PropertyGroup>
 
   <ItemGroup>
