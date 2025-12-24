@@ -23,7 +23,7 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Publish (self-contained)
-        run: dotnet publish ./Shadr.csproj -c Release --self-contained true -p:Version=${{ env.VERSION }} -o publish
+        run: dotnet publish ./Shadr.csproj -c Release -r win-x64 --self-contained -p:Version=${{ env.VERSION }} -o publish
 
       - name: Create ZIP with multiple files (required for Updatum restart)
         shell: pwsh
@@ -33,6 +33,7 @@ jobs:
           Copy-Item "publish/Shadr.exe" -Destination "temp/"
           Copy-Item "README.md" -Destination "temp/"
           Compress-Archive -Path "temp/*" -DestinationPath "release/Shadr-v${{ env.VERSION }}-win-x64.zip"
+          Remove-Item "temp" -Recurse -Force
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
