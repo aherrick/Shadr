@@ -29,14 +29,16 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path "release" -Force
-          Copy-Item "publish/Shadr.exe" -Destination "release/Shadr_win-x64_v${{ env.VERSION }}.exe"
+          # Add dummy file so Updatum treats as portable app (uses batch script for update)
+          New-Item -ItemType File -Path "publish/.updatum" -Force
+          Compress-Archive -Path "publish/Shadr.exe", "publish/.updatum" -DestinationPath "release/Shadr_win-x64_v${{ env.VERSION }}.zip"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.VERSION }}
           name: Shadr ${{ env.VERSION }}
-          files: release/Shadr_win-x64_v${{ env.VERSION }}.exe
+          files: release/Shadr_win-x64_v${{ env.VERSION }}.zip
           draft: false
           prerelease: false
 
