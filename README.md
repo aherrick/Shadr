@@ -24,9 +24,9 @@ A lightweight Windows application to control your screen brightness beyond your 
 
 ## Installation
 
-1. Download `Shadr-vX.X.X-win-x64.zip` from the [latest release](https://github.com/aherrick/Shadr/releases/latest)
-2. Extract to any folder
-3. Run `Shadr.exe`
+1. Download `Shadr_win-x64_vX.X.X.exe` from the [latest release](https://github.com/aherrick/Shadr/releases/latest)
+2. Place it anywhere (or your Startup folder if you want it to launch at login)
+3. Run `Shadr_win-x64_vX.X.X.exe`
 4. Shadr will auto-update when new versions are available
 
 ## Usage
@@ -37,13 +37,14 @@ A lightweight Windows application to control your screen brightness beyond your 
    - **Check for Updates** - Manually check for new versions
    - **About** - Opens the GitHub page
    - **Exit** - Close the application
+3. Double-click the tray icon to reset to 100%
 
 ### How It Works
 
 - **50% and above**: Uses gamma ramp adjustment - modifies the display's color curve for natural brightness changes
 - **Below 50%**: Uses a black overlay for deeper dimming with true blacks
 
-Gamma changes are automatically reset when the app exits.
+Gamma changes are automatically reset when the app exits. The overlay is click-through so it won't block your apps.
 
 ### Auto-Updates
 

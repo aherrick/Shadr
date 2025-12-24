@@ -28,12 +28,4 @@ public static class ClickThroughHelper
         _ = SetWindowLong(windowHandle, GWL_EXSTYLE, exStyle | WS_EX_TRANSPARENT | WS_EX_LAYERED);
     }
 
-    /// <summary>
-    /// Disables click-through on the specified window.
-    /// </summary>
-    public static void DisableClickThrough(IntPtr windowHandle)
-    {
-        int exStyle = GetWindowLong(windowHandle, GWL_EXSTYLE);
-        _ = SetWindowLong(windowHandle, GWL_EXSTYLE, (exStyle & ~WS_EX_TRANSPARENT) | WS_EX_LAYERED);
-    }
 }

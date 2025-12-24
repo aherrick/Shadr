@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Reflection;
 using Updatum;
 
@@ -7,14 +8,19 @@ public partial class Form1 : Form
 {
     private readonly NotifyIcon trayIcon;
     private readonly BrightnessHelper _brightnessHelper;
-    
+    private readonly ToolStripMenuItem[] _brightnessMenuItems;
+    private readonly int[] _levels = [25, 50, 75, 100, 125, 150];
+    private const int DefaultBrightness = 100;
+    private int _currentBrightness = DefaultBrightness;
+
     private static readonly UpdatumManager AppUpdater = new("aherrick", "Shadr")
     {
         FetchOnlyLatestRelease = true,
         InstallUpdateSingleFileExecutableName = "Shadr",
     };
-    
-    private static string AppVersion => Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
+
+    private static string AppVersion =>
+        Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
 
     public Form1()
     {
@@ -23,32 +29,46 @@ public partial class Form1 : Form
         // Initialize brightness helper with this form as the overlay
         _brightnessHelper = new BrightnessHelper(this);
 
+        // Create brightness menu items with checkmarks (loop-based)
+        _brightnessMenuItems =
+        [
+            .. _levels.Select(level => new ToolStripMenuItem(
+                $"{level}%",
+                null,
+                (s, e) => SetBrightnessWithCheck(level)
+            )),
+        ];
+
         trayIcon = new NotifyIcon()
         {
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath),
-            ContextMenuStrip = new ContextMenuStrip
-            {
-                Items =
-                {
-                    new ToolStripMenuItem("25%", null, (s, e) => _brightnessHelper.SetBrightness(25)),
-                    new ToolStripMenuItem("50%", null, (s, e) => _brightnessHelper.SetBrightness(50)),
-                    new ToolStripMenuItem("75%", null, (s, e) => _brightnessHelper.SetBrightness(75)),
-                    new ToolStripMenuItem("100%", null, (s, e) => _brightnessHelper.SetBrightness(100)),
-                    new ToolStripMenuItem("125%", null, (s, e) => _brightnessHelper.SetBrightness(125)),
-                    new ToolStripMenuItem("150%", null, (s, e) => _brightnessHelper.SetBrightness(150)),
-                    new ToolStripSeparator(),
-                    new ToolStripMenuItem(
-                        "Check for Updates",
-                        null,
-                        async (s, e) => await CheckForUpdatesAsync()
-                    ),
-                    new ToolStripMenuItem("About", null, (s, e) => OpenAbout()),
-                    new ToolStripMenuItem("Exit", null, (s, e) => Application.Exit()),
-                },
-            },
+            ContextMenuStrip = new ContextMenuStrip(),
             Text = $"Shadr v{AppVersion}",
             Visible = true,
         };
+
+        // Build context menu
+        trayIcon.ContextMenuStrip.Items.AddRange(_brightnessMenuItems);
+        trayIcon.ContextMenuStrip.Items.Add(new ToolStripSeparator());
+        trayIcon.ContextMenuStrip.Items.Add(
+            new ToolStripMenuItem(
+                "Check for Updates",
+                null,
+                async (s, e) => await CheckForUpdatesAsync()
+            )
+        );
+        trayIcon.ContextMenuStrip.Items.Add(
+            new ToolStripMenuItem("About", null, (s, e) => OpenAbout())
+        );
+        trayIcon.ContextMenuStrip.Items.Add(
+            new ToolStripMenuItem("Exit", null, (s, e) => Application.Exit())
+        );
+
+        // Double-click tray icon to reset to 100%
+        trayIcon.DoubleClick += (s, e) => SetBrightnessWithCheck(DefaultBrightness);
+
+        // Set initial brightness and checkmark
+        SetBrightnessWithCheck(DefaultBrightness);
 
         // Configure the form to act as an overlay (used for extreme dimming only)
         FormBorderStyle = FormBorderStyle.None;
@@ -65,6 +85,18 @@ public partial class Form1 : Form
             ClickThroughHelper.EnableClickThrough(this.Handle);
             await CheckForUpdatesAsync(silent: true);
         };
+    }
+
+    private void SetBrightnessWithCheck(int percentage)
+    {
+        _brightnessHelper.SetBrightness(percentage);
+        _currentBrightness = percentage;
+
+        // Update checkmarks
+        for (int i = 0; i < _brightnessMenuItems.Length; i++)
+        {
+            _brightnessMenuItems[i].Checked = _levels[i] == percentage;
+        }
     }
 
     private static async Task CheckForUpdatesAsync(bool silent = false)
@@ -121,11 +153,13 @@ public partial class Form1 : Form
     {
         try
         {
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = "https://github.com/aherrick/Shadr",
-                UseShellExecute = true
-            });
+            System.Diagnostics.Process.Start(
+                new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "https://github.com/aherrick/Shadr",
+                    UseShellExecute = true,
+                }
+            );
         }
         catch
         {

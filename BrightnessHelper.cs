@@ -41,13 +41,6 @@ public class BrightnessHelper : IDisposable
     private bool _originalGammaSaved;
     private readonly Form _overlayForm;
     private bool _disposed;
-    private int _currentBrightness = 100;
-
-    /// <summary>
-    /// Brightness levels available in the application.
-    /// Values represent percentage where 100 = normal, less = dimmer, more = brighter.
-    /// </summary>
-    public static readonly int[] AvailableLevels = [50, 75, 100, 125, 150];
 
     /// <summary>
     /// The threshold below which we use overlay instead of gamma for better deep dimming.
@@ -72,7 +65,6 @@ public class BrightnessHelper : IDisposable
     {
         // Clamp to valid range
         percentage = Math.Clamp(percentage, 25, 150);
-        _currentBrightness = percentage;
 
         if (percentage < OverlayThreshold)
         {
@@ -102,8 +94,6 @@ public class BrightnessHelper : IDisposable
         ResetGamma();
         HideOverlay();
     }
-
-
 
     #region Gamma Ramp Methods
 
