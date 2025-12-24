@@ -29,16 +29,14 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path "release" -Force
-          # Add LICENSE file so Updatum treats as portable app (uses batch script for update)
-          Set-Content -Path "publish/LICENSE" -Value "MIT License - https://github.com/aherrick/Shadr"
-          Compress-Archive -Path "publish/Shadr.exe", "publish/LICENSE" -DestinationPath "release/Shadr_win-x64_v${{ env.VERSION }}.zip"
+          Copy-Item "publish/Shadr.exe" -Destination "release/Shadr_win-x64_v${{ env.VERSION }}.exe"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.VERSION }}
           name: Shadr ${{ env.VERSION }}
-          files: release/Shadr_win-x64_v${{ env.VERSION }}.zip
+          files: release/Shadr_win-x64_v${{ env.VERSION }}.exe
           draft: false
           prerelease: false
 

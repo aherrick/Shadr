@@ -138,9 +138,14 @@ public partial class Form1 : Form
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Silently fail - updates are not critical
+            MessageBox.Show(
+                $"Update error: {ex.Message}\n\n{ex.StackTrace}",
+                "Shadr - Update Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error
+            );
         }
     }
 
