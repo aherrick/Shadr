@@ -29,8 +29,9 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path "release" -Force
-          # Single file EXE in ZIP (to reproduce update bug with running processes)
-          Compress-Archive -Path "publish/Shadr.exe" -DestinationPath "release/Shadr_win-x64_v${{ env.VERSION }}.zip"
+          # Add LICENSE file so Updatum treats as portable app (uses batch script for proper update)
+          Set-Content -Path "publish/LICENSE" -Value "MIT License - https://github.com/aherrick/Shadr"
+          Compress-Archive -Path "publish/Shadr.exe", "publish/LICENSE" -DestinationPath "release/Shadr_win-x64_v${{ env.VERSION }}.zip"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
