@@ -25,18 +25,12 @@ jobs:
       - name: Publish (self-contained)
         run: dotnet publish ./Shadr.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:Version=${{ env.VERSION }} -o publish
 
-      - name: Prepare release asset
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Path "release" -Force
-          Compress-Archive -Path "publish/Shadr.exe" -DestinationPath "release/Shadr_win-x64_v${{ env.VERSION }}.zip"
-
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.VERSION }}
           name: Shadr ${{ env.VERSION }}
-          files: release/Shadr_win-x64_v${{ env.VERSION }}.zip
+          files: publish/Shadr.exe
           draft: false
           prerelease: false
 
