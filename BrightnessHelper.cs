@@ -43,9 +43,9 @@ public class BrightnessHelper : IDisposable
     private bool _disposed;
 
     /// <summary>
-    /// The threshold below which we use overlay instead of gamma for better deep dimming.
+    /// The threshold below which we use overlay instead of gamma for consistent dimming.
     /// </summary>
-    private const int OverlayThreshold = 50;
+    private const int OverlayThreshold = 100;
 
     /// <summary>
     /// Creates a new BrightnessHelper instance.
@@ -128,7 +128,9 @@ public class BrightnessHelper : IDisposable
     /// <summary>
     /// Applies a gamma ramp for the specified brightness percentage.
     /// </summary>
-    /// <param name="percentage">Brightness percentage (50-150).</param>
+    /// <param name="percentage">Brightness percentage (>100-150).
+    /// Values above 100 increase brightness using gamma.
+    /// </param>
     private void ApplyGamma(int percentage)
     {
         IntPtr hdc = CreateDC("DISPLAY", null, null, IntPtr.Zero);

@@ -9,13 +9,13 @@ A lightweight Windows application to control your screen brightness beyond your 
 - **Quick Access**: System tray icon for instant brightness control
 - **Flexible Brightness Levels**:
   - 25% - Heavy dimming (overlay)
-  - 50% - Light dimming (gamma)
-  - 75% - Slight dimming (gamma)
+  - 50% - Light dimming (overlay)
+  - 75% - Slight dimming (overlay)
   - 100% - Normal brightness
   - 125% - Brightness boost (gamma)
   - 150% - Maximum brightness boost (gamma)
-- **Gamma Ramp Technology**: Uses Windows gamma adjustment for natural-looking brightness changes (50-150%)
-- **Overlay Dimming**: Black overlay for deep dimming below 50%
+ - **Gamma Ramp Technology**: Uses Windows gamma adjustment for natural-looking brightness changes above 100%
+ - **Overlay Dimming**: Black overlay for dimming below 100%
 - **Auto-Updates**: Automatically checks for and installs new versions from GitHub
 - **Click-Through**: The overlay doesn't interfere with your work
 - **Always On Top**: Stays on top of all windows
@@ -41,8 +41,8 @@ A lightweight Windows application to control your screen brightness beyond your 
 
 ### How It Works
 
-- **50% and above**: Uses gamma ramp adjustment - modifies the display's color curve for natural brightness changes
-- **Below 50%**: Uses a black overlay for deeper dimming with true blacks
+ - **Above 100%**: Uses gamma ramp adjustment - modifies the display's color curve for natural brightness changes
+ - **Below 100%**: Uses a black overlay for dimming with true blacks
 
 Gamma changes are automatically reset when the app exits. The overlay is click-through so it won't block your apps.
 
