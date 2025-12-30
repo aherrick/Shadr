@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Reflection;
 using Updatum;
 
@@ -50,6 +49,31 @@ public partial class Form1 : Form
 
         // Build context menu
         trayIcon.ContextMenuStrip.Items.AddRange(_brightnessMenuItems);
+        trayIcon.ContextMenuStrip.Items.Add(new ToolStripSeparator());
+        var startupMenuItem = new ToolStripMenuItem(
+            "Run at Startup",
+            null,
+            (s, e) =>
+            {
+                if (StartupHelper.ToggleStartup())
+                {
+                    (s as ToolStripMenuItem).Checked = StartupHelper.IsEnabled();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        $"Failed to update startup setting.",
+                        "Shadr - Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+            }
+        )
+        {
+            Checked = StartupHelper.IsEnabled(),
+        };
+        trayIcon.ContextMenuStrip.Items.Add(startupMenuItem);
         trayIcon.ContextMenuStrip.Items.Add(new ToolStripSeparator());
         trayIcon.ContextMenuStrip.Items.Add(
             new ToolStripMenuItem(

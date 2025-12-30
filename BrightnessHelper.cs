@@ -17,7 +17,12 @@ public class BrightnessHelper : IDisposable
     private static extern bool GetDeviceGammaRamp(IntPtr hDC, ref GammaRamp lpRamp);
 
     [DllImport("gdi32.dll")]
-    private static extern IntPtr CreateDC(string lpszDriver, string? lpszDevice, string? lpszOutput, IntPtr lpInitData);
+    private static extern IntPtr CreateDC(
+        string lpszDriver,
+        string? lpszDevice,
+        string? lpszOutput,
+        IntPtr lpInitData
+    );
 
     [DllImport("gdi32.dll")]
     private static extern bool DeleteDC(IntPtr hdc);
@@ -35,7 +40,7 @@ public class BrightnessHelper : IDisposable
         public ushort[] Blue;
     }
 
-    #endregion
+    #endregion P/Invoke for Gamma Ramp
 
     private GammaRamp _originalGamma;
     private bool _originalGammaSaved;
@@ -103,7 +108,8 @@ public class BrightnessHelper : IDisposable
     private void SaveOriginalGamma()
     {
         IntPtr hdc = CreateDC("DISPLAY", null, null, IntPtr.Zero);
-        if (hdc == IntPtr.Zero) return;
+        if (hdc == IntPtr.Zero)
+            return;
 
         try
         {
@@ -111,7 +117,7 @@ public class BrightnessHelper : IDisposable
             {
                 Red = new ushort[256],
                 Green = new ushort[256],
-                Blue = new ushort[256]
+                Blue = new ushort[256],
             };
 
             if (GetDeviceGammaRamp(hdc, ref _originalGamma))
@@ -134,7 +140,8 @@ public class BrightnessHelper : IDisposable
     private void ApplyGamma(int percentage)
     {
         IntPtr hdc = CreateDC("DISPLAY", null, null, IntPtr.Zero);
-        if (hdc == IntPtr.Zero) return;
+        if (hdc == IntPtr.Zero)
+            return;
 
         try
         {
@@ -157,7 +164,7 @@ public class BrightnessHelper : IDisposable
         {
             Red = new ushort[256],
             Green = new ushort[256],
-            Blue = new ushort[256]
+            Blue = new ushort[256],
         };
 
         for (int i = 0; i < 256; i++)
@@ -181,10 +188,12 @@ public class BrightnessHelper : IDisposable
     /// </summary>
     private void ResetGamma()
     {
-        if (!_originalGammaSaved) return;
+        if (!_originalGammaSaved)
+            return;
 
         IntPtr hdc = CreateDC("DISPLAY", null, null, IntPtr.Zero);
-        if (hdc == IntPtr.Zero) return;
+        if (hdc == IntPtr.Zero)
+            return;
 
         try
         {
@@ -196,7 +205,7 @@ public class BrightnessHelper : IDisposable
         }
     }
 
-    #endregion
+    #endregion Gamma Ramp Methods
 
     #region Overlay Methods
 
@@ -223,7 +232,7 @@ public class BrightnessHelper : IDisposable
         _overlayForm.Opacity = 0.0;
     }
 
-    #endregion
+    #endregion Overlay Methods
 
     #region IDisposable
 
@@ -235,7 +244,8 @@ public class BrightnessHelper : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
 
         // Always reset gamma on dispose to restore normal display
         ResetGamma();
@@ -248,5 +258,5 @@ public class BrightnessHelper : IDisposable
         Dispose(false);
     }
 
-    #endregion
+    #endregion IDisposable
 }
