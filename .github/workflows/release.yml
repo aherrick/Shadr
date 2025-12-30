@@ -25,12 +25,15 @@ jobs:
       - name: Publish (self-contained)
         run: dotnet publish ./Shadr.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:Version=${{ env.VERSION }} -o publish
 
+      - name: Rename executable
+        run: move publish/Shadr.exe publish/Shadr_win-x64_v${{ env.VERSION }}.exe
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.VERSION }}
           name: Shadr ${{ env.VERSION }}
-          files: publish/Shadr.exe
+          files: publish/Shadr_win-x64_v${{ env.VERSION }}.exe
           draft: false
           prerelease: false
 

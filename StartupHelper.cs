@@ -11,6 +11,7 @@ internal static class StartupHelper
     {
         using var key = Registry.CurrentUser.OpenSubKey(StartupRegistryKey, false);
         var value = key?.GetValue(AppName) as string;
+
         return !string.IsNullOrWhiteSpace(value);
     }
 
@@ -22,12 +23,18 @@ internal static class StartupHelper
 
             using var key = Registry.CurrentUser.CreateSubKey(StartupRegistryKey, true);
             if (key == null)
+            {
                 return false;
+            }
 
             if (targetState)
+            {
                 key.SetValue(AppName, $"\"{Application.ExecutablePath}\"");
+            }
             else
+            {
                 key.DeleteValue(AppName, false);
+            }
 
             return true;
         }
