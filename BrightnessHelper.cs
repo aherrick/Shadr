@@ -19,8 +19,8 @@ public class BrightnessHelper : IDisposable
     [DllImport("gdi32.dll")]
     private static extern IntPtr CreateDC(
         string lpszDriver,
-        string? lpszDevice,
-        string? lpszOutput,
+        string lpszDevice,
+        string lpszOutput,
         IntPtr lpInitData
     );
 
