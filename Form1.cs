@@ -104,13 +104,6 @@ public partial class Form1 : Form
         Load += async (s, e) =>
         {
             ClickThroughHelper.EnableClickThrough(Handle);
-
-            // Fix startup path if it changed after an update
-            if (StartupHelper.NeedsPathUpdate())
-            {
-                StartupHelper.UpdateStartupPath();
-            }
-
             await CheckForUpdatesAsync(silent: true);
         };
     }

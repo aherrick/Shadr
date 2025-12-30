@@ -14,25 +14,6 @@ internal static class StartupHelper
         return !string.IsNullOrWhiteSpace(value);
     }
 
-    /// <summary>
-    /// Checks if startup is enabled but pointing to the wrong executable path.
-    /// This can happen after an update when the EXE name changes.
-    /// </summary>
-    public static bool NeedsPathUpdate()
-    {
-        using var key = Registry.CurrentUser.OpenSubKey(StartupRegistryKey, false);
-        var value = key?.GetValue(AppName) as string;
-
-        if (string.IsNullOrWhiteSpace(value))
-            return false;
-
-        var currentPath = $"\"{Application.ExecutablePath}\"";
-        return !value.Equals(currentPath, StringComparison.OrdinalIgnoreCase);
-    }
-
-    /// <summary>
-    /// Enables or disables startup and updates the path to the current executable.
-    /// </summary>
     public static bool SetEnabled(bool enabled)
     {
         try
@@ -54,13 +35,5 @@ internal static class StartupHelper
         }
     }
 
-    /// <summary>
-    /// Toggles startup on/off. Returns true if the operation succeeded.
-    /// </summary>
     public static bool ToggleStartup() => SetEnabled(!IsEnabled());
-
-    /// <summary>
-    /// Updates the startup path to the current executable. Call after an update.
-    /// </summary>
-    public static bool UpdateStartupPath() => SetEnabled(true);
 }
