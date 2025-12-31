@@ -1,94 +1,37 @@
-# Shadr
+# Shadr 💡
 
 [![Release](https://img.shields.io/github/v/release/aherrick/Shadr)](https://github.com/aherrick/Shadr/releases)
 
-A lightweight Windows application to control your screen brightness beyond your monitor's native range. Perfect for reducing eye strain during late-night sessions or boosting visibility in bright environments.
+Control your screen brightness beyond what your monitor allows. Dim down for late-night work or brighten up when the sun's in your face.
 
-## Features
+## Features ✨
 
-- **Quick Access**: System tray icon for instant brightness control
-- **Flexible Brightness Levels**:
-  - 25% - Heavy dimming (overlay)
-  - 50% - Light dimming (overlay)
-  - 75% - Slight dimming (overlay)
-  - 100% - Normal brightness
-  - 125% - Brightness boost (gamma)
-  - 150% - Maximum brightness boost (gamma)
- - **Gamma Ramp Technology**: Uses Windows gamma adjustment for natural-looking brightness changes above 100%
- - **Overlay Dimming**: Black overlay for dimming below 100%
-- **Auto-Updates**: Automatically checks for and installs new versions from GitHub
-- **Click-Through**: The overlay doesn't interfere with your work
-- **Always On Top**: Stays on top of all windows
-- **Lightweight**: Minimal resource usage, single-file executable
-- **Self-Contained**: No .NET runtime installation required
+- 🎚️ Six brightness levels (25% → 150%)
+- 📌 System tray icon for quick access
+- 🔄 Auto-updates from GitHub
+- 🚀 Single executable, no runtime needed
+- ⚡ Lightweight and click-through overlay
 
-## Installation
+## Quick Start 🚀
 
-1. Download `Shadr_win-x64_vX.X.X.zip` from the [latest release](https://github.com/aherrick/Shadr/releases/latest)
-2. Extract and place `Shadr.exe` anywhere (or your Startup folder if you want it to launch at login)
-3. Run `Shadr.exe`
-4. Shadr will auto-update when new versions are available
+1. Grab the latest `Shadr.exe` from [releases](https://github.com/aherrick/Shadr/releases/latest)
+2. Run it (optional: drop it in Startup for auto-launch)
+3. Adjust brightness from the system tray
 
-## Usage
+## How to Use 🎯
 
-1. After launching, Shadr appears as an icon in your system tray
-2. Right-click the tray icon to access the menu:
-   - Select brightness levels (25%, 50%, 75%, 100%, 125%, 150%)
-   - **Check for Updates** - Manually check for new versions
-   - **About** - Opens the GitHub page
-   - **Exit** - Close the application
-3. Double-click the tray icon to reset to 100%
+Right-click the system tray icon to:
+- Pick a brightness level (25%, 50%, 75%, 100%, 125%, 150%)
+- Check for updates
+- View the GitHub page
+- Exit
 
-### How It Works
-
- - **Above 100%**: Uses gamma ramp adjustment - modifies the display's color curve for natural brightness changes
- - **Below 100%**: Uses a black overlay for dimming with true blacks
-
-Gamma changes are automatically reset when the app exits. The overlay is click-through so it won't block your apps.
-
-### Auto-Updates
-
-Shadr automatically checks for updates on startup. When a new version is available:
-- You'll see a notification with version details
-- Click "Yes" to download and install
-- The app will restart with the new version
-
-### Run on Startup
-
-To make Shadr start automatically with Windows:
-1. Press `Win + R`
-2. Type `shell:startup` and press Enter
-3. Create a shortcut to `Shadr.exe` in that folder
+Double-click to reset to 100%.
 
 ## Requirements
 
 - Windows 10 or later
-- No additional runtime required (self-contained)
 
-## Building from Source
+## License & Contributing
 
-```powershell
-# Clone the repository
-git clone https://github.com/aherrick/Shadr.git
-cd Shadr
-
-# Publish single-file executable
-dotnet publish -c Release
-
-# Output will be in: bin\Release\net10.0-windows\win-x64\publish\
-```
-
-## Technical Details
-
-- Built with .NET 10 and Windows Forms
-- Gamma adjustment via Windows GDI32 `SetDeviceGammaRamp`
-- Auto-updates powered by [Updatum](https://github.com/sn4k3/Updatum)
-- GitHub Actions CI/CD for automated releases
-
-## License
-
-This project is open source. Feel free to use and modify as needed.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+Open source—use, modify, and contribute freely!
