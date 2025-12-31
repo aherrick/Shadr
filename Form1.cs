@@ -14,8 +14,8 @@ public partial class Form1 : Form
 
     private static readonly UpdatumManager AppUpdater = new("aherrick", "Shadr")
     {
-        AssetRegexPattern = @"^Shadr\.exe$",
-        InstallUpdateWindowsExeType = UpdatumWindowsExeType.SingleFileApp,
+        //AssetRegexPattern = @"^Shadr\.exe$",
+        //InstallUpdateWindowsExeType = UpdatumWindowsExeType.SingleFileApp,
     };
 
     private static string AppVersion =>
