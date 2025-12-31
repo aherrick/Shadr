@@ -12,7 +12,11 @@ public partial class Form1 : Form
     private const int DefaultBrightness = 100;
     private int _currentBrightness = DefaultBrightness;
 
-    private static readonly UpdatumManager AppUpdater = new("aherrick", "Shadr");
+    private static readonly UpdatumManager AppUpdater = new("aherrick", "Shadr")
+    {
+        AssetRegexPattern = @"^Shadr\.exe$",
+        InstallUpdateWindowsExeType = UpdatumWindowsExeType.SingleFileApp,
+    };
 
     private static string AppVersion =>
         Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
