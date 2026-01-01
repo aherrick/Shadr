@@ -157,7 +157,22 @@ public partial class Form1 : Form
 
             if (result == DialogResult.Yes)
             {
+                var progressForm = new ProgressForm();
+                AppUpdater.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == nameof(UpdatumManager.DownloadedPercentage))
+                    {
+                        progressForm.UpdateProgress(
+                            AppUpdater.DownloadedPercentage,
+                            $"Downloaded: {AppUpdater.DownloadedMegabytes} MB / {AppUpdater.DownloadSizeMegabytes} MB"
+                        );
+                    }
+                };
+
+                progressForm.Show();
                 var downloadedAsset = await AppUpdater.DownloadUpdateAsync();
+                progressForm.Close();
+
                 if (downloadedAsset != null)
                 {
                     // Reset brightness before update kills the process
