@@ -57,12 +57,15 @@ public partial class Form1 : Form
                 /// if toggling startup setting succeeded, update checkmark
                 if (StartupHelper.ToggleStartup())
                 {
-                    (s as ToolStripMenuItem).Checked = StartupHelper.IsEnabled();
+                    if (s is ToolStripMenuItem item)
+                    {
+                        item.Checked = StartupHelper.IsEnabled();
+                    }
                 }
                 else
                 {
                     MessageBox.Show(
-                        $"Failed to update startup setting.",
+                        "Failed to update startup setting.",
                         "Shadr - Error",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error

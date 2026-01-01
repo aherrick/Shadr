@@ -6,38 +6,36 @@ namespace Shadr;
 /// Helper class for managing screen brightness using gamma ramp adjustments
 /// and overlay techniques for extreme dimming.
 /// </summary>
-public class BrightnessHelper : IDisposable
+public partial class BrightnessHelper : IDisposable
 {
     #region P/Invoke for Gamma Ramp
 
-    [DllImport("gdi32.dll")]
-    private static extern bool SetDeviceGammaRamp(IntPtr hDC, ref GammaRamp lpRamp);
+    [LibraryImport("gdi32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetDeviceGammaRamp(IntPtr hDC, ref GammaRamp lpRamp);
 
-    [DllImport("gdi32.dll")]
-    private static extern bool GetDeviceGammaRamp(IntPtr hDC, ref GammaRamp lpRamp);
+    [LibraryImport("gdi32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GetDeviceGammaRamp(IntPtr hDC, ref GammaRamp lpRamp);
 
-    [DllImport("gdi32.dll")]
-    private static extern IntPtr CreateDC(
+    [LibraryImport("gdi32.dll", StringMarshalling = StringMarshalling.Utf16)]
+    private static partial IntPtr CreateDC(
         string lpszDriver,
         string lpszDevice,
         string lpszOutput,
         IntPtr lpInitData
     );
 
-    [DllImport("gdi32.dll")]
-    private static extern bool DeleteDC(IntPtr hdc);
+    [LibraryImport("gdi32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool DeleteDC(IntPtr hdc);
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct GammaRamp
+    private unsafe struct GammaRamp
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        public ushort[] Red;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        public ushort[] Green;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-        public ushort[] Blue;
+        public fixed ushort Red[256];
+        public fixed ushort Green[256];
+        public fixed ushort Blue[256];
     }
 
     #endregion P/Invoke for Gamma Ramp
@@ -113,12 +111,7 @@ public class BrightnessHelper : IDisposable
 
         try
         {
-            _originalGamma = new GammaRamp
-            {
-                Red = new ushort[256],
-                Green = new ushort[256],
-                Blue = new ushort[256],
-            };
+            _originalGamma = new GammaRamp();
 
             if (GetDeviceGammaRamp(hdc, ref _originalGamma))
             {
@@ -137,7 +130,7 @@ public class BrightnessHelper : IDisposable
     /// <param name="percentage">Brightness percentage (>100-150).
     /// Values above 100 increase brightness using gamma.
     /// </param>
-    private void ApplyGamma(int percentage)
+    private static void ApplyGamma(int percentage)
     {
         IntPtr hdc = CreateDC("DISPLAY", null, null, IntPtr.Zero);
         if (hdc == IntPtr.Zero)
@@ -158,14 +151,9 @@ public class BrightnessHelper : IDisposable
     /// Creates a gamma ramp for the specified brightness multiplier.
     /// </summary>
     /// <param name="brightness">Brightness multiplier (0.5 = 50%, 1.0 = 100%, 1.5 = 150%).</param>
-    private static GammaRamp CreateGammaRamp(double brightness)
+    private static unsafe GammaRamp CreateGammaRamp(double brightness)
     {
-        var ramp = new GammaRamp
-        {
-            Red = new ushort[256],
-            Green = new ushort[256],
-            Blue = new ushort[256],
-        };
+        var ramp = new GammaRamp();
 
         for (int i = 0; i < 256; i++)
         {
