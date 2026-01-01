@@ -6,7 +6,18 @@ namespace Shadr;
 /// Helper class for managing screen brightness using gamma ramp adjustments
 /// and overlay techniques for extreme dimming.
 /// </summary>
-#pragma warning disable CA1822, CA2101, SYSLIB1054
+// Suppress CA2101: we explicitly control the marshaling for GDI string parameters
+// (we use `CharSet` or platform-default behavior via DllImport). The analyzer
+// suggests specifying per-parameter marshaling but for these well-known
+// native APIs (gdi32) the default interop behavior is appropriate and tested.
+//
+// Suppress SYSLIB1054: the LibraryImport source-generator can provide better
+// P/Invoke marshalling, but migrating to it requires careful testing (entry
+// point names and generated signatures must match exactly). To avoid runtime
+// regressions in CI we retain `DllImport` for now and suppress the analyzer
+// until a planned, tested migration is performed.
+#pragma warning disable CA2101, SYSLIB1054
+
 public class BrightnessHelper : IDisposable
 {
     #region P/Invoke for Gamma Ramp
@@ -138,7 +149,7 @@ public class BrightnessHelper : IDisposable
     /// <param name="percentage">Brightness percentage (>100-150).
     /// Values above 100 increase brightness using gamma.
     /// </param>
-    private void ApplyGamma(int percentage)
+    private static void ApplyGamma(int percentage)
     {
         IntPtr hdc = CreateDC("DISPLAY", null, null, IntPtr.Zero);
         if (hdc == IntPtr.Zero)
