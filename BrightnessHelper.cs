@@ -6,7 +6,7 @@ namespace Shadr;
 /// Helper class for managing screen brightness using gamma ramp adjustments
 /// and overlay techniques for extreme dimming.
 /// </summary>
-#pragma warning disable CA2101, SYSLIB1054 // P/Invoke marshalling - using DllImport for compatibility
+#pragma warning disable CA1822, CA2101, SYSLIB1054
 public class BrightnessHelper : IDisposable
 {
     #region P/Invoke for Gamma Ramp
@@ -17,11 +17,11 @@ public class BrightnessHelper : IDisposable
     [DllImport("gdi32.dll")]
     private static extern bool GetDeviceGammaRamp(IntPtr hDC, ref GammaRamp lpRamp);
 
-    [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
+    [DllImport("gdi32.dll")]
     private static extern IntPtr CreateDC(
         string lpszDriver,
-        string? lpszDevice,
-        string? lpszOutput,
+        string lpszDevice,
+        string lpszOutput,
         IntPtr lpInitData
     );
 
@@ -42,7 +42,6 @@ public class BrightnessHelper : IDisposable
     }
 
     #endregion P/Invoke for Gamma Ramp
-#pragma warning restore CA2101, SYSLIB1054
 
     private GammaRamp _originalGamma;
     private bool _originalGammaSaved;
@@ -139,7 +138,7 @@ public class BrightnessHelper : IDisposable
     /// <param name="percentage">Brightness percentage (>100-150).
     /// Values above 100 increase brightness using gamma.
     /// </param>
-    private static void ApplyGamma(int percentage)
+    private void ApplyGamma(int percentage)
     {
         IntPtr hdc = CreateDC("DISPLAY", null, null, IntPtr.Zero);
         if (hdc == IntPtr.Zero)
