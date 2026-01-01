@@ -6,39 +6,43 @@ namespace Shadr;
 /// Helper class for managing screen brightness using gamma ramp adjustments
 /// and overlay techniques for extreme dimming.
 /// </summary>
-public partial class BrightnessHelper : IDisposable
+#pragma warning disable CA2101, SYSLIB1054 // P/Invoke marshalling - using DllImport for compatibility
+public class BrightnessHelper : IDisposable
 {
     #region P/Invoke for Gamma Ramp
 
-    [LibraryImport("gdi32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool SetDeviceGammaRamp(IntPtr hDC, ref GammaRamp lpRamp);
+    [DllImport("gdi32.dll")]
+    private static extern bool SetDeviceGammaRamp(IntPtr hDC, ref GammaRamp lpRamp);
 
-    [LibraryImport("gdi32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetDeviceGammaRamp(IntPtr hDC, ref GammaRamp lpRamp);
+    [DllImport("gdi32.dll")]
+    private static extern bool GetDeviceGammaRamp(IntPtr hDC, ref GammaRamp lpRamp);
 
-    [LibraryImport("gdi32.dll", StringMarshalling = StringMarshalling.Utf16)]
-    private static partial IntPtr CreateDC(
+    [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
+    private static extern IntPtr CreateDC(
         string lpszDriver,
-        string lpszDevice,
-        string lpszOutput,
+        string? lpszDevice,
+        string? lpszOutput,
         IntPtr lpInitData
     );
 
-    [LibraryImport("gdi32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool DeleteDC(IntPtr hdc);
+    [DllImport("gdi32.dll")]
+    private static extern bool DeleteDC(IntPtr hdc);
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private unsafe struct GammaRamp
+    private struct GammaRamp
     {
-        public fixed ushort Red[256];
-        public fixed ushort Green[256];
-        public fixed ushort Blue[256];
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        public ushort[] Red;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        public ushort[] Green;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+        public ushort[] Blue;
     }
 
     #endregion P/Invoke for Gamma Ramp
+#pragma warning restore CA2101, SYSLIB1054
 
     private GammaRamp _originalGamma;
     private bool _originalGammaSaved;
@@ -111,7 +115,12 @@ public partial class BrightnessHelper : IDisposable
 
         try
         {
-            _originalGamma = new GammaRamp();
+            _originalGamma = new GammaRamp
+            {
+                Red = new ushort[256],
+                Green = new ushort[256],
+                Blue = new ushort[256],
+            };
 
             if (GetDeviceGammaRamp(hdc, ref _originalGamma))
             {
@@ -151,9 +160,14 @@ public partial class BrightnessHelper : IDisposable
     /// Creates a gamma ramp for the specified brightness multiplier.
     /// </summary>
     /// <param name="brightness">Brightness multiplier (0.5 = 50%, 1.0 = 100%, 1.5 = 150%).</param>
-    private static unsafe GammaRamp CreateGammaRamp(double brightness)
+    private static GammaRamp CreateGammaRamp(double brightness)
     {
-        var ramp = new GammaRamp();
+        var ramp = new GammaRamp
+        {
+            Red = new ushort[256],
+            Green = new ushort[256],
+            Blue = new ushort[256],
+        };
 
         for (int i = 0; i < 256; i++)
         {
