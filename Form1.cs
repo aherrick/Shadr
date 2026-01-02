@@ -158,7 +158,7 @@ public partial class Form1 : Form
             if (result == DialogResult.Yes)
             {
                 var progressForm = new ProgressForm();
-                AppUpdater.PropertyChanged += (s, e) =>
+                AppUpdater.PropertyChanged += (_, e) =>
                 {
                     if (e.PropertyName == nameof(UpdatumManager.DownloadedPercentage))
                     {

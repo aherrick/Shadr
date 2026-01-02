@@ -13,7 +13,7 @@ public partial class ProgressForm : Form
         MinimizeBox = false;
         ControlBox = false;
         StartPosition = FormStartPosition.CenterScreen;
-        
+
         // High DPI support
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(450, 120);
@@ -25,20 +25,20 @@ public partial class ProgressForm : Form
             RowCount = 2,
             ColumnCount = 1
         };
-        
+
         layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
 
-        _statusLabel = new Label 
-        { 
-            Dock = DockStyle.Fill, 
+        _statusLabel = new Label
+        {
+            Dock = DockStyle.Fill,
             TextAlign = ContentAlignment.BottomLeft,
             AutoSize = true,
             Margin = new Padding(0, 0, 0, 10)
         };
-        
-        _progressBar = new ProgressBar 
-        { 
+
+        _progressBar = new ProgressBar
+        {
             Dock = DockStyle.Top,
             Height = 25
         };
